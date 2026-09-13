@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import './style.css'
+import { paulistaRun } from './paulistaMap.js'
 
 const SAVE_KEY = 'mtfk-streets-of-shifu-3d-save-v1'
 
@@ -83,6 +84,25 @@ app.innerHTML = `
   </div>
 `
 
+
+createPaulistaBackdrop()
+
+
+createPaulistaBackdrop()
+
+function createPaulistaBackdrop() {
+  const old = document.querySelector('.paulistaBackdrop')
+  if (old) old.remove()
+
+  const backdrop = document.createElement('div')
+  backdrop.className = 'paulistaBackdrop'
+  backdrop.innerHTML = `
+    <div class="matrixRain"></div>
+    <img id="paulistaArt" class="paulistaArt" src="/art/paulista-arcade.svg" alt="Avenida Paulista arcade" />
+  `
+  app.prepend(backdrop)
+}
+
 const canvas = document.querySelector('#game')
 const hud = document.querySelector('#hud')
 const overlay = document.querySelector('#overlay')
@@ -93,14 +113,14 @@ showTitle()
 
 function initThree() {
   scene = new THREE.Scene()
-  scene.background = new THREE.Color(0x080914)
+  scene.background = null
   scene.fog = new THREE.Fog(0x080914, 18, 55)
 
   camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100)
-  camera.position.set(0, 8, 16)
-  camera.lookAt(0, 1, 0)
+  camera.position.set(0, 3.9, 12)
+  camera.lookAt(0, -1.15, 0)
 
-  renderer = new THREE.WebGLRenderer({ canvas, antialias: true })
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true })
   renderer.setSize(window.innerWidth, window.innerHeight)
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2))
   renderer.shadowMap.enabled = true
@@ -122,52 +142,39 @@ function initThree() {
 
 function createStage() {
   const street = new THREE.Mesh(
-    new THREE.BoxGeometry(80, 0.25, 11),
-    new THREE.MeshStandardMaterial({ color: 0x11131c, roughness: 0.18, metalness: 0.55 })
+    new THREE.BoxGeometry(150, 0.22, 11),
+    new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0 })
   )
   street.position.y = -0.15
   street.receiveShadow = true
   scene.add(street)
 
-  for (let i = -38; i <= 38; i += 8) {
+  const sidewalkBack = new THREE.Mesh(
+    new THREE.BoxGeometry(150, 0.1, 2.2),
+    new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0 })
+  )
+  sidewalkBack.position.set(0, 0, -5.4)
+  scene.add(sidewalkBack)
+
+  const sidewalkFront = sidewalkBack.clone()
+  sidewalkFront.position.z = 5.4
+  scene.add(sidewalkFront)
+
+  for (let i = -70; i <= 70; i += 8) {
     const line = new THREE.Mesh(
-      new THREE.BoxGeometry(3.5, 0.03, 0.08),
+      new THREE.BoxGeometry(3.5, 0.035, 0.08),
       new THREE.MeshStandardMaterial({ color: 0xf6e58d, emissive: 0x332800 })
     )
-    line.position.set(i, 0.02, 0)
+    line.visible = false
+    line.position.set(i, 0.04, 0)
     scene.add(line)
   }
 
-  addBuilding(-18, 'GAZETA', 0xff3344)
-  addBuilding(0, 'TRIANON-MASP', 0x39ff88)
-  addBuilding(18, 'BANCO DE TÓQUIO', 0x66aaff)
-
-  for (let i = -34; i <= 34; i += 8) {
-    const lamp = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 5), new THREE.MeshStandardMaterial({ color: 0x22262f }))
-    lamp.position.set(i, 2.4, -5.2)
-    scene.add(lamp)
-    const bulb = new THREE.PointLight(0xffd58a, 1.8, 10)
-    bulb.position.set(i, 5.2, -5.2)
-    scene.add(bulb)
+  for (let i = -68; i <= 68; i += 12) {
+    const glow = new THREE.PointLight(i % 24 === 0 ? 0xff2638 : 0x39ff88, 1.8, 12)
+    glow.position.set(i, 4.2, -3.8)
+    scene.add(glow)
   }
-}
-
-function addBuilding(x, label, color) {
-  const building = new THREE.Mesh(
-    new THREE.BoxGeometry(12, 8, 1.2),
-    new THREE.MeshStandardMaterial({ color: 0x141827, roughness: 0.8 })
-  )
-  building.position.set(x, 4, -7)
-  scene.add(building)
-
-  const sign = document.createElement('div')
-  sign.className = 'worldLabel'
-  sign.textContent = label
-  sign.style.color = '#' + color.toString(16).padStart(6, '0')
-  app.appendChild(sign)
-  sign.dataset.x = x
-  sign.dataset.y = 6.8
-  sign.dataset.z = -6.3
 }
 
 function createActors() {
@@ -175,20 +182,20 @@ function createActors() {
   state.hp = Math.min(state.hp || data.maxHp, data.maxHp)
 
   player = createHumanoid(data)
-  player.position.set(-22, 1, 0)
+  player.position.set(-22, -1.15, 0)
   scene.add(player)
 
   tioGe = createNpc(0xffb347, 'Tio Gé')
-  tioGe.position.set(-4, 1, 3.8)
+  tioGe.position.set(-4, -1.15, 2.2)
   scene.add(tioGe)
 
   kiko = createNpc(0x7cf7ff, 'Kiko')
-  kiko.position.set(6, 1, 3.8)
+  kiko.position.set(6, -1.15, 2.2)
   scene.add(kiko)
 
   for (let i = 0; i < 5; i++) {
     const enemy = createEnemy()
-    enemy.position.set(8 + i * 5, 1, Math.random() * 5 - 2.5)
+    enemy.position.set(8 + i * 5, -1.15, Math.random() * 4.4 - 2.2)
     enemy.userData.hp = 35
     enemies.push(enemy)
     scene.add(enemy)
@@ -210,6 +217,7 @@ function createHumanoid(data) {
   head.position.y = 1.65
   group.add(head)
 
+  group.scale.set(0.55, 0.55, 0.55)
   return group
 }
 
@@ -228,17 +236,19 @@ function createNpc(color) {
 }
 
 function showTitle() {
-  overlay.className = 'overlay'
+  overlay.className = 'overlay matrixMenu'
   hud.classList.add('hidden')
   mobile.classList.add('hidden')
   overlay.innerHTML = `
-    <div class="panel title">
-      <h1>MTFK • Streets of SHIFU 3D</h1>
-      <p>Beat'em up 2,5D arcade urbano. Avenida Paulista, Diêro, Larica e porrada sábia.</p>
-      <button onclick="window.startSelect()">Start</button>
+    <div class="matrixPanel title">
+      <div class="eyebrow">THE MTFK SYSTEM PRESENTS</div>
+      <h1>STREETS OF<br>SHIFU 3D</h1>
+      <p>Paulista noturna. Kung Fu, Diêro, Larica e memória arcade.</p>
+      <button onclick="window.startSelect()">Entrar na Matrix MTFK</button>
     </div>
   `
 }
+
 
 window.startSelect = () => {
   state.screen = 'select'
@@ -300,22 +310,25 @@ function update(dt) {
   const dx = (keys.d || keys.ArrowRight ? 1 : 0) - (keys.a || keys.ArrowLeft ? 1 : 0)
   const dz = (keys.s || keys.ArrowDown ? 1 : 0) - (keys.w || keys.ArrowUp ? 1 : 0)
 
-  player.position.x = THREE.MathUtils.clamp(player.position.x + dx * speed * dt, -36, 36)
-  player.position.z = THREE.MathUtils.clamp(player.position.z + dz * speed * dt, -4.2, 4.2)
+  player.position.x = THREE.MathUtils.clamp(player.position.x + dx * speed * dt, -68, 68)
+  player.position.z = THREE.MathUtils.clamp(player.position.z + dz * speed * dt, -2.2, 2.2)
 
-  camera.position.x = THREE.MathUtils.lerp(camera.position.x, player.position.x + 3, 0.08)
-  camera.lookAt(player.position.x + 2, 1, 0)
+  camera.position.x = THREE.MathUtils.lerp(camera.position.x, player.position.x + 1.5, 0.12)
+  camera.lookAt(player.position.x + 2, -1.15, 0)
+
+  const backdrop = document.querySelector('.paulistaBackdrop')
+  if (backdrop) backdrop.style.setProperty('--stage-scroll', `${-player.position.x * 45}px`)
 
   enemies.forEach(enemy => {
     if (enemy.userData.dead) return
     const dir = player.position.clone().sub(enemy.position)
     if (dir.length() < 12) {
       dir.normalize()
-      enemy.position.x += dir.x * dt * 2
-      enemy.position.z += dir.z * dt * 2
+      enemy.position.x += dir.x * dt * 0.75
+      enemy.position.z += dir.z * dt * 0.75
     }
     if (enemy.position.distanceTo(player.position) < 1.2) {
-      state.hp = Math.max(0, state.hp - dt * 5)
+      state.hp = Math.max(0, state.hp - dt * 1.2)
     }
   })
 
@@ -364,7 +377,7 @@ function openBurger() {
   state.shop = 'burger'
   overlay.className = 'overlay'
   overlay.innerHTML = `
-    <div class="panel shop">
+    <div class="matrixPanel shop">
       <h2>Tio Gé</h2>
       <p>“Vai querer qual, rapaz?”</p>
       <p>Larica: <b>${state.larica}</b></p>
@@ -390,7 +403,7 @@ function openKiko() {
   state.shop = 'kiko'
   overlay.className = 'overlay'
   overlay.innerHTML = `
-    <div class="panel shop">
+    <div class="matrixPanel shop">
       <h2>Sucos do Kiko</h2>
       <p>O conteúdo é suspeito! Você nunca sabe o que vai no suco.</p>
       <p>Todos custam 5 Laricas. Larica: <b>${state.larica}</b></p>
@@ -428,7 +441,7 @@ function toggleInventory() {
   state.paused = !state.paused
   overlay.className = state.paused ? 'overlay' : 'overlay hidden'
   overlay.innerHTML = `
-    <div class="panel shop">
+    <div class="matrixPanel shop">
       <h2>Inventário</h2>
       <p>Diêro: ${state.dinheiro} | Larica: ${state.larica}</p>
       <p>${state.inventory.length ? state.inventory.join('<br>') : 'Inventário vazio.'}</p>

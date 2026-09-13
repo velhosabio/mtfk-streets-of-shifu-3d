@@ -200,3 +200,330 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 }
+
+.paulistaBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 35% 25%, rgba(255,38,56,0.22), transparent 28%),
+    radial-gradient(circle at 70% 20%, rgba(57,255,136,0.18), transparent 30%),
+    linear-gradient(#070813 0%, #111323 48%, #19131a 100%);
+}
+
+.skylineLayer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 34%;
+  height: 46%;
+  transform: translateX(var(--scroll, 0px));
+  transition: transform 0.05s linear;
+}
+
+.arcadeBuilding {
+  position: absolute;
+  bottom: 0;
+  width: var(--w);
+  height: var(--h);
+  left: var(--x);
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,0.16) 0 3px,
+      transparent 3px 18px
+    ),
+    linear-gradient(160deg, var(--c1), var(--c2));
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 0 24px rgba(0,0,0,0.45);
+}
+
+.arcadeBuilding::after {
+  content: attr(data-label);
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  max-width: calc(100% - 16px);
+  color: var(--sign);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px currentColor, 0 2px 4px #000;
+}
+
+.arcadeMetro {
+  position: absolute;
+  bottom: -10px;
+  width: 120px;
+  height: 64px;
+  left: var(--x);
+  border-radius: 8px 8px 0 0;
+  background: linear-gradient(#163425, #07110e);
+  border: 2px solid rgba(57,255,136,0.65);
+  box-shadow: 0 0 24px rgba(57,255,136,0.28);
+}
+
+.arcadeMetro::before {
+  content: "M";
+  position: absolute;
+  left: 12px;
+  top: 8px;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #07110e;
+  background: #39ff88;
+  font-weight: 1000;
+}
+
+.arcadeMetro::after {
+  content: attr(data-label);
+  position: absolute;
+  left: 46px;
+  top: 12px;
+  color: #dffff0;
+  font-size: 11px;
+  font-weight: 900;
+  text-shadow: 0 0 8px #39ff88;
+}
+
+.arcadeMasp {
+  position: absolute;
+  left: var(--x);
+  bottom: 26px;
+  width: 180px;
+  height: 94px;
+}
+
+.arcadeMasp::before {
+  content: "";
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  top: 0;
+  height: 42px;
+  background: linear-gradient(90deg, #111722, #343b4a, #111722);
+  border: 2px solid rgba(255,255,255,0.22);
+  box-shadow: 0 0 28px rgba(255,38,56,0.35);
+}
+
+.arcadeMasp::after {
+  content: "MASP";
+  position: absolute;
+  left: 54px;
+  top: 48px;
+  color: #ff2638;
+  font-weight: 1000;
+  letter-spacing: 3px;
+  text-shadow: 0 0 14px #ff2638;
+}
+
+.maspPillar {
+  position: absolute;
+  top: 34px;
+  width: 12px;
+  height: 58px;
+  background: #ff2638;
+  box-shadow: 0 0 14px #ff2638;
+}
+
+.maspPillar.left { left: 35px; }
+.maspPillar.right { right: 35px; }
+
+.arcadeGazeta {
+  position: absolute;
+  left: var(--x);
+  bottom: 0;
+  width: 150px;
+  height: 260px;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,224,120,0.16) 0 4px, transparent 4px 20px),
+    linear-gradient(160deg, #171b28, #30364a);
+  border: 1px solid rgba(255,255,255,0.16);
+  box-shadow: 0 0 30px rgba(255,192,72,0.22);
+}
+
+.arcadeGazeta::before {
+  content: "";
+  position: absolute;
+  left: 72px;
+  top: -76px;
+  width: 5px;
+  height: 82px;
+  background: #ffc048;
+  box-shadow: 0 0 14px #ffc048;
+}
+
+.arcadeGazeta::after {
+  content: "GAZETA";
+  position: absolute;
+  left: 22px;
+  bottom: 22px;
+  color: #ffc048;
+  font-size: 18px;
+  font-weight: 1000;
+  letter-spacing: 2px;
+  text-shadow: 0 0 16px #ffc048;
+}
+
+.rainGlow {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 42%;
+  background:
+    linear-gradient(90deg, transparent, rgba(255,38,56,0.12), transparent),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.08) 0 1px, transparent 1px 42px);
+  opacity: 0.55;
+}
+
+canvas#game {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  background: transparent;
+}
+
+.paulistaBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: #050712;
+  pointer-events: none;
+}
+
+.paulistaArt {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 220vw;
+  min-width: 2200px;
+  height: 100vh;
+  object-fit: cover;
+  object-position: left bottom;
+  transform: translateX(var(--scroll, 0px));
+  transition: transform 0.05s linear;
+  filter: saturate(1.1) contrast(1.08);
+}
+
+.matrixRain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.22;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 22px, rgba(57,255,136,0.12) 22px 23px, transparent 23px 44px),
+    repeating-linear-gradient(0deg, transparent 0 10px, rgba(57,255,136,0.07) 10px 11px);
+  animation: matrixDrift 12s linear infinite;
+}
+
+@keyframes matrixDrift {
+  from { transform: translateY(-80px); }
+  to { transform: translateY(80px); }
+}
+
+.overlay {
+  z-index: 20;
+}
+
+.matrixMenu {
+  background:
+    radial-gradient(circle at 50% 40%, rgba(57,255,136,0.12), transparent 34%),
+    linear-gradient(rgba(1,3,7,0.72), rgba(1,3,7,0.9));
+}
+
+.matrixPanel {
+  width: min(760px, 94vw);
+  max-height: 90vh;
+  overflow: auto;
+  padding: 24px;
+  border: 1px solid rgba(57,255,136,0.42);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(3,9,8,0.94), rgba(5,7,15,0.96));
+  box-shadow: 0 0 24px rgba(57,255,136,0.16), 0 24px 80px rgba(0,0,0,0.55);
+}
+
+.matrixPanel h1 {
+  color: #dffff0;
+  text-shadow: 0 0 18px #39ff88;
+}
+
+.matrixPanel h2,
+.matrixPanel p,
+.matrixPanel .eyebrow {
+  color: #dffff0;
+}
+
+.eyebrow {
+  margin-bottom: 12px;
+  color: #39ff88 !important;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 3px;
+}
+
+.matrixPanel button {
+  border-color: rgba(57,255,136,0.5);
+  background: linear-gradient(180deg, #39ff88, #13995a);
+  color: #03110b;
+  box-shadow: 0 0 16px rgba(57,255,136,0.22);
+}
+
+.matrixPanel button:disabled {
+  background: #26352f;
+  color: #7fae98;
+}
+
+.matrixPanel .grid button {
+  background: linear-gradient(180deg, #173c2d, #0b1816);
+  color: #dffff0;
+}
+
+.matrixPanel .grid button:hover {
+  background: linear-gradient(180deg, #39ff88, #13995a);
+  color: #03110b;
+}
+
+
+/* Final Paulista painted background */
+.paulistaBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: #050712;
+  pointer-events: none;
+}
+
+.paulistaBackdrop::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("/art/paulista-arcade-final.png");
+  background-size: auto 100%;
+  background-position: left bottom;
+  background-repeat: no-repeat;
+  transform: translateX(var(--stage-scroll, 0px));
+  transition: transform 0.05s linear;
+}
+
+canvas#game {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  background: transparent;
+}
+
+/* Align 3D gameplay layer with the painted street */
+canvas#game {
+  transform: translateY(230px);
+}
+
+/* Make the painted Paulista behave like a long stage, not a screen background */
+.paulistaBackdrop::before {
+  width: 1000vw;
+  background-size: 100% 100%;
+}
